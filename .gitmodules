@@ -10,3 +10,6 @@
 [submodule "resources/addyosmani-skills"]
 	path = resources/addyosmani-skills
 	url = https://github.com/addyosmani/agent-skills.git
+[submodule "resources/superpowers"]
+	path = resources/superpowers
+	url = git@github.com:obra/superpowers.git
