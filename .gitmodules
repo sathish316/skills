@@ -1,0 +1,12 @@
+[submodule "resources/agent-skills"]
+	path = resources/addyosmani-agent-skills
+	url = https://github.com/addyosmani/agent-skills.git
+[submodule "resources/mattpocock-skills"]
+	path = resources/mattpocock-skills
+	url = https://github.com/mattpocock/skills.git
+[submodule "resources/maiobarbero-skills"]
+	path = resources/maiobarbero-skills
+	url = https://github.com/maiobarbero/my-ai-workflow.git
+[submodule "resources/addyosmani-skills"]
+	path = resources/addyosmani-skills
+	url = https://github.com/addyosmani/agent-skills.git
