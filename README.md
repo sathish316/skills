@@ -2,9 +2,38 @@
 
 AI-SDLC skills and general-purpose skills that I use everyday.
 
-# Usage - Coding agents that support .agents/skills
+# Setup - Coding agents that support .agents/skills
 
-# Usage - Claude code
+# Setup - Claude code
+
+# Usage
+
+## For large features
+
+1. /write-prd
+2. /prd-to-rfc (Optional if Tech design doc is needed)
+3. /prd-to-issues
+4. /issue-to-tasks
+5. /code-simplify
+6. /code-review
+7. /final-review-and-create-pr
+
+## For medium/small features
+
+1. /write-feature-acceptance-criteria
+2. /feature-to-rfc (Optional if Tech design doc is needed)
+3. /feature-to-issues
+4. /issue-to-tasks
+5. /code-simplify
+6. /code-review
+7. /final-review-and-create-pr
+
+## For minor features
+
+1. Just ask the agent to do the work
+2. /code-simplify
+3. /code-review
+4. /create-pr
 
 # Resources
 
