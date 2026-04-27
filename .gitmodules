@@ -13,3 +13,6 @@
 [submodule "resources/superpowers"]
 	path = resources/superpowers
 	url = git@github.com:obra/superpowers.git
+[submodule "resources/gstack"]
+	path = resources/gstack
+	url = git@github.com:garrytan/gstack.git
