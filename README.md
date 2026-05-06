@@ -21,7 +21,7 @@ AI-SDLC skills and general-purpose skills that I use everyday.
 
 ## For medium/small features
 
-1. /write-feature-acceptance-criteria
+1. /brainstorm-feature
 2. /feature-to-rfc (Optional if Tech design doc is needed)
 3. /feature-to-issues
 4. /issue-to-tasks
