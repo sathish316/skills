@@ -1,5 +1,5 @@
 ---
-name: write-a-prd
+name: write-prd
 description: Create a PRD through user interview, codebase exploration, and module design, then save it as a file. Use when the user wants to write a PRD, create a product requirements document, or plan a new feature.
 ---
 

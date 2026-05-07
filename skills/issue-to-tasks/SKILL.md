@@ -1,5 +1,5 @@
 ---
-name: issues-to-tasks
+name: issue-to-tasks
 description: Break an issue file into concrete, ordered, AI-executable tasks. Use when the user wants to implement an issue, start work on a ticket, or break down an issue into smaller steps.
 ---
 

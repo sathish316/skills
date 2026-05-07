@@ -1,5 +1,5 @@
 ---
-name: LogAnalyzer
+name: loki-logs-analyzer
 description: Analyze logs to investigate errors and exceptions
 ---
 

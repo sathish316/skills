@@ -1,5 +1,5 @@
 ---
-name: MetricsAnalyzer
+name: prometheus-metrics-analyzer
 description: Analyze metrics to debug alerts or incidents
 ---
 

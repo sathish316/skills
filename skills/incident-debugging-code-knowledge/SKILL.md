@@ -1,5 +1,5 @@
 ---
-name: Debug Issue
+name: incident-debugging-code-knowledge
 description: Systematically debug issues using graph-powered code navigation
 ---
 

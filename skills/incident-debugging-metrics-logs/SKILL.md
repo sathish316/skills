@@ -1,6 +1,6 @@
 ---
-name: IncidentDebugger
-description: Debug and explain production incidents by combining MetricsAnalyzer and LogAnalyzer workflows, correlating Prometheus metrics with Loki logs over the incident window.
+name: incident-debugging-metrics-logs
+description: Debug and explain production incidents by combining prometheus-metrics-analyzer and loki-logs-analyzer workflows, correlating Prometheus metrics with Loki logs over the incident window.
 ---
 
 # Incident Debugging Skill
@@ -9,8 +9,8 @@ Use this skill when the user asks to debug, investigate, triage, or explain an i
 
 This is an orchestration skill. It uses both:
 
-- `MetricsAnalyzer` to find the shape, timing, scope, and severity of the incident from Prometheus.
-- `LogAnalyzer` to explain the metric pattern with concrete errors, request flows, dependency failures, and timestamps from Loki.
+- `prometheus-metrics-analyzer` to find the shape, timing, scope, and severity of the incident from Prometheus.
+- `loki-logs-analyzer` to explain the metric pattern with concrete errors, request flows, dependency failures, and timestamps from Loki.
 
 ## Workflow
 
@@ -20,13 +20,13 @@ This is an orchestration skill. It uses both:
    - If no service is provided, discover likely service labels from metrics and logs before querying broadly.
 
 2. **Analyze metrics first**
-   - Follow the `MetricsAnalyzer` skill workflow.
+   - Follow the `prometheus-metrics-analyzer` skill workflow.
    - Query up to 5 relevant metrics over the incident window.
    - Prefer error rate, request rate, latency, saturation, timeout, retry, and dependency health metrics.
    - Note the first visible change, peak impact, affected labels, and whether the signal recovered.
 
 3. **Analyze logs for explanation**
-   - Follow the `LogAnalyzer` skill workflow.
+   - Follow the `loki-logs-analyzer` skill workflow.
    - Use the metric timeline and labels to scope Loki queries.
    - Query errors, exceptions, failures, timeouts, refused connections, HTTP 4xx/5xx responses, and exact messages suggested by metric labels.
    - Look for the first causal error in a request or dependency flow, not only the final user-facing failure.
