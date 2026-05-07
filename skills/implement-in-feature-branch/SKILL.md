@@ -38,6 +38,8 @@ Choose the parent branch using this order:
 5. If implementing an issue, use the current branch only if it is already the intended feature integration branch.
 6. Otherwise use the repository's normal integration branch: `develop` if present, else `main`, else `master`.
 
+If the current branch is not `main`, `master`, or `develop`, ask the user to confirm whether to create the new feature branch from the current branch. If they confirm, use the current branch as the parent. If they decline, fall back to the parent selection rules above or ask which branch to use.
+
 If the correct parent is ambiguous, stop and ask the user which branch to use. Do not guess when branch ancestry affects merge safety.
 
 ## Process
@@ -98,7 +100,20 @@ Run the verification specified by the issue or task file. Also run focused tests
 
 If verification fails, fix the issue or explain the blocker. Do not claim completion until verification passes or the user accepts the residual risk.
 
-### 7. Report
+### 7. Ask Whether To Commit
+
+At the end of implementation, ask the user whether to commit the changes on the feature branch.
+
+Before asking, show:
+
+- Branch name
+- Files changed
+- Verification run and result
+- Suggested commit message
+
+Do not commit without user approval. If the user approves, create a normal commit on the feature branch. If they decline, leave the changes uncommitted and report the branch state.
+
+### 8. Report
 
 Report:
 
@@ -106,6 +121,7 @@ Report:
 - Input file implemented
 - Files changed
 - Verification run and result
+- Commit hash if committed, or uncommitted status if not committed
 - Any follow-up issues or review gates
 
 ## Principles
