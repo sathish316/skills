@@ -28,9 +28,8 @@ AI-SDLC skills and general-purpose skills that I use everyday.
 5. *code* each issue or task (Just prompt or use implement-* skills)
 6. /code-simplify
 7. /code-review
-8.1 /finish-work-*-and-create-pr (for each issue or task if needed) 
-8.2 /apply-pr-comments (for each issue or task if needed)
-8.3 /final-review-and-create-pr (for all issues or tasks of a feature)
+8. /finish-work-*-and-create-pr (for each issue or task if needed) 
+9. /apply-pr-comments (for each issue or task if needed)
 
 ## For minor features
 
@@ -44,5 +43,5 @@ AI-SDLC skills and general-purpose skills that I use everyday.
 Other similar skills resources:
 * https://github.com/addyosmani/agent-skills
 * https://github.com/mattpocock/skills
-* https://github.com/maiobarbero/my-ai-workflow/tree/main/skills
+* https://github.com/maiobarbero/my-ai-workflow
 * https://github.com/obra/superpowers
