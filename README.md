@@ -2,34 +2,12 @@
 
 AI-SDLC skills and general-purpose skills that I use everyday.
 
-# Install in a repo
+# Install skill in a repo or globally
 
-## Option 1: `npx skills add`
-
-Install a specific skill from this repo into the current repository:
+Install a specific skill from this repo
 
 ```sh
 npx skills@latest add sathish316/skills --skill brainstorm-feature
-```
-
-## Option 2: Git submodule + symlink all skills
-
-Add this repo as a submodule, then symlink every skill into your repo's `.agents/skills` directory:
-
-```sh
-git submodule add https://github.com/sathish316/skills.git .agents/skill-repos/sathish316-skills
-mkdir -p .agents/skills
-for skill in .agents/skill-repos/sathish316-skills/skills/*; do ln -s "../skill-repos/sathish316-skills/skills/$(basename "$skill")" ".agents/skills/$(basename "$skill")"; done
-```
-
-## Option 3: Git submodule + symlink a specific skill
-
-Add this repo as a submodule, then symlink only the skill you want:
-
-```sh
-git submodule add https://github.com/sathish316/skills.git .agents/skill-repos/sathish316-skills
-mkdir -p .agents/skills
-ln -s ../skill-repos/sathish316-skills/skills/brainstorm-feature .agents/skills/brainstorm-feature
 ```
 
 # Usage
