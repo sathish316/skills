@@ -4,13 +4,12 @@ AI-SDLC skills and general-purpose skills that I use everyday.
 
 # Install in a repo
 
-## Option 1: `npx marketplace add` + `npx skills install`
+## Option 1: `npx skills add`
 
-Add this repo as a skills marketplace, then install a specific skill from it into the current repository:
+Install a specific skill from this repo into the current repository:
 
 ```sh
-npx marketplace add sathish316-skills github:sathish316/skills
-npx skills install sathish316-skills/brainstorm-feature
+npx skills@latest add sathish316/skills --skill brainstorm-feature
 ```
 
 ## Option 2: Git submodule + symlink all skills
