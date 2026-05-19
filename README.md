@@ -2,6 +2,37 @@
 
 AI-SDLC skills and general-purpose skills that I use everyday.
 
+# Install in a repo
+
+## Option 1: `npx marketplace add` + `npx skills install`
+
+Add this repo as a skills marketplace, then install a specific skill from it into the current repository:
+
+```sh
+npx marketplace add sathish316-skills github:sathish316/skills
+npx skills install sathish316-skills/brainstorm-feature
+```
+
+## Option 2: Git submodule + symlink all skills
+
+Add this repo as a submodule, then symlink every skill into your repo's `.agents/skills` directory:
+
+```sh
+git submodule add https://github.com/sathish316/skills.git .agents/skill-repos/sathish316-skills
+mkdir -p .agents/skills
+for skill in .agents/skill-repos/sathish316-skills/skills/*; do ln -s "../skill-repos/sathish316-skills/skills/$(basename "$skill")" ".agents/skills/$(basename "$skill")"; done
+```
+
+## Option 3: Git submodule + symlink a specific skill
+
+Add this repo as a submodule, then symlink only the skill you want:
+
+```sh
+git submodule add https://github.com/sathish316/skills.git .agents/skill-repos/sathish316-skills
+mkdir -p .agents/skills
+ln -s ../skill-repos/sathish316-skills/skills/brainstorm-feature .agents/skills/brainstorm-feature
+```
+
 # Usage
 
 ## For large features ([flowchart](docs/devskills-decision-tree-flowchart.md))
