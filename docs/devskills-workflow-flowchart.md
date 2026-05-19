@@ -1,8 +1,4 @@
-# Devskills Workflow Flowchart
-
-Format: Mermaid Markdown. This keeps the workflow editable in the repo and renderable in GitHub/Cursor Markdown preview.
-
-Source: user-provided medium/small feature workflow, recorded 2026-05-08.
+<p align="center"><b>Devskills Workflow</b></p>
 
 ```mermaid
 flowchart TD

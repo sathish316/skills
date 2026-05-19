@@ -2,10 +2,6 @@
 
 AI-SDLC skills and general-purpose skills that I use everyday.
 
-# Setup - Coding agents that support .agents/skills
-
-# Setup - Claude code
-
 # Usage
 
 ## For large features
@@ -45,3 +41,4 @@ Other similar skills resources:
 * https://github.com/mattpocock/skills
 * https://github.com/maiobarbero/my-ai-workflow
 * https://github.com/obra/superpowers
+* https://github.com/garrytan/gstack
