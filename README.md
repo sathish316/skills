@@ -56,3 +56,24 @@ Other similar skills resources:
 * https://github.com/maiobarbero/my-ai-workflow
 * https://github.com/obra/superpowers
 * https://github.com/garrytan/gstack
+
+# Skill-specific docs
+
+## Codewiki skill
+
+Install codewiki skills in a repo:
+
+```sh
+npx skills@latest add sathish316/skills --skill codewiki
+npx skills@latest add sathish316/skills --skill codewiki-viewer
+```
+
+Ask your Coding agent to generate and serve Codewiki
+
+```
+Use codewiki skill to generate comprehensive documentation for this repo.
+```
+
+```
+Use codewiki-viewer skill to serve html documentation
+```
