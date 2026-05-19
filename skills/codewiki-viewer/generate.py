@@ -20,12 +20,19 @@ Usage:
 """
 
 import argparse
+import hashlib
 import os
 import re
 import shutil
+import socket
 import subprocess
 import sys
 from pathlib import Path
+from typing import Optional
+
+
+PORT_RANGE_START = 8100
+PORT_RANGE_SIZE = 900
 
 
 # ── Page metadata extraction ──
@@ -237,8 +244,38 @@ def ensure_node_modules(viewer_dir: Path):
                        capture_output=True, text=True)
 
 
+def preferred_port_for_repo(repo_dir: Path) -> int:
+    """Choose a stable default port from the repository path."""
+    digest = hashlib.sha256(str(repo_dir.resolve()).encode('utf-8')).hexdigest()
+    offset = int(digest[:8], 16) % PORT_RANGE_SIZE
+    return PORT_RANGE_START + offset
+
+
+def is_port_available(port: int) -> bool:
+    """Return True when localhost can bind the requested port."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            sock.bind(('127.0.0.1', port))
+        except OSError:
+            return False
+    return True
+
+
+def find_available_port(preferred_port: int) -> int:
+    """Find an available port, starting with the repo-specific preferred port."""
+    for step in range(PORT_RANGE_SIZE):
+        port = PORT_RANGE_START + ((preferred_port - PORT_RANGE_START + step) % PORT_RANGE_SIZE)
+        if is_port_available(port):
+            return port
+
+    raise RuntimeError(
+        f"No available port found in {PORT_RANGE_START}-{PORT_RANGE_START + PORT_RANGE_SIZE - 1}"
+    )
+
+
 def run_eleventy(viewer_dir: Path, build_dir: Path, output_dir: Path,
-                 serve: bool = False, port: int = 8088):
+                 serve: bool = False, port: int = PORT_RANGE_START):
     """Run Eleventy to build or serve the site.
 
     Eleventy is run with:
@@ -277,7 +314,8 @@ def run_eleventy(viewer_dir: Path, build_dir: Path, output_dir: Path,
 
 # ── Main orchestration ──
 
-def generate_site(codewiki_dir: Path, output_dir: Path, serve: bool = False, port: int = 8088):
+def generate_site(codewiki_dir: Path, output_dir: Path, serve: bool = False,
+                  port: Optional[int] = None):
     """Generate the complete HTML site."""
     viewer_dir = Path(__file__).parent.resolve()
 
@@ -288,7 +326,13 @@ def generate_site(codewiki_dir: Path, output_dir: Path, serve: bool = False, por
     build_dir, page_count = prepare_build_dir(codewiki_dir, viewer_dir)
 
     try:
-        run_eleventy(viewer_dir, build_dir, output_dir, serve=serve, port=port)
+        effective_port = port
+        if serve and effective_port is None:
+            repo_dir = codewiki_dir.parent
+            effective_port = find_available_port(preferred_port_for_repo(repo_dir))
+
+        run_eleventy(viewer_dir, build_dir, output_dir, serve=serve,
+                     port=effective_port or PORT_RANGE_START)
     finally:
         # Clean up temp build directory (unless serving — user may Ctrl+C)
         if not serve and build_dir.exists():
@@ -312,8 +356,8 @@ def main():
                         help='Path to output directory (default: codewiki/_site)')
     parser.add_argument('--serve', action='store_true',
                         help='Start a local dev server after generating')
-    parser.add_argument('--port', type=int, default=8088,
-                        help='Port for local server (default: 8088)')
+    parser.add_argument('--port', type=int, default=None,
+                        help='Port for local server (default: stable repo-specific free port)')
     args = parser.parse_args()
 
     codewiki_dir = Path(args.codewiki_dir).resolve()

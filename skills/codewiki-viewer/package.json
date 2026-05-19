@@ -5,7 +5,7 @@
   "description": "Static site generator for CodeWiki documentation",
   "scripts": {
     "build": "eleventy",
-    "serve": "eleventy --serve --port 8088",
+    "serve": "eleventy --serve",
     "clean": "rm -rf _site"
   },
   "dependencies": {

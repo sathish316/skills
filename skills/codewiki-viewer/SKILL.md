@@ -36,8 +36,13 @@ python3 <path-to-this-skill>/generate.py --codewiki-dir codewiki --output-dir co
 5. Tell the user the local URL. The default is:
 
 ```text
-http://localhost:8088
+http://localhost:<repo-specific-port>
 ```
+
+By default, `generate.py` chooses a stable port from the repository path so
+different repositories do not always compete for the same port. If that
+repo-specific port is already in use, it scans forward to the next available
+viewer port. To force a specific port, pass `--port <port>`.
 
 ## Static Build
 
