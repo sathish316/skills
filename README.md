@@ -10,6 +10,12 @@ Install a specific skill from this repo
 npx skills@latest add sathish316/skills --skill brainstorm-feature
 ```
 
+Install all skills from this repo
+
+```sh
+npx skills@latest add sathish316/skills --skill '*'
+```
+
 # Usage
 
 ## For large features ([flowchart](docs/devskills-decision-tree-flowchart.md))
