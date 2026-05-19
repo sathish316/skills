@@ -10,7 +10,7 @@ description: >
 model: claude-opus-4-6@20250213
 license: MIT
 metadata:
-  author: Rovo Dev
+  author: sathish316
   version: "1.0.0"
 allowed-tools:
   - "Read"

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} — RovoDev Wiki</title>
+    <title>{{ title }} — CodeWiki</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -210,7 +210,7 @@
         // ── Dark mode ──
         (function() {
             const html = document.documentElement;
-            const key = 'rovodev-wiki-theme';
+            const key = 'codewiki-theme';
             const stored = localStorage.getItem(key);
             if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 html.classList.replace('light', 'dark');

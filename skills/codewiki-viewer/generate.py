@@ -8,16 +8,15 @@ Converts codewiki/ markdown files into a beautiful static HTML site with:
 - Sidebar navigation
 - Full-text search (Algolia-style interactive)
 - Tailwind CSS styling with dark/light mode
-- RovoDev Wiki branding
 
 Architecture:
-    rovocodewiki/viewer/       — Reusable templates (layouts, includes, config)
-    codewiki/                  — Project-specific markdown files (source of truth)
-    codewiki/_build/           — Temporary Eleventy build directory (auto-cleaned)
-    codewiki/_site/            — Generated HTML output
+    codewiki-viewer/    — Reusable templates (layouts, includes, config)
+    codewiki/           — Project-specific markdown files (source of truth)
+    codewiki/_build/    — Temporary Eleventy build directory (auto-cleaned)
+    codewiki/_site/     — Generated HTML output
 
 Usage:
-    python rovocodewiki/viewer/generate.py [--codewiki-dir PATH] [--output-dir PATH] [--serve]
+    python codewiki-viewer/generate.py [--codewiki-dir PATH] [--output-dir PATH] [--serve]
 """
 
 import argparse
@@ -101,6 +100,30 @@ def discover_markdown_files(codewiki_dir: Path) -> list:
     return files
 
 
+def confirm_wiki_generation_needed(codewiki_dir: Path) -> bool:
+    """Prompt the user when CodeWiki markdown files are missing.
+
+    Returns True when the caller should continue, False when the caller should stop.
+    The script does not generate wiki markdown itself; generation is handled by the
+    companion codewiki skill.
+    """
+    print(f"❌ No CodeWiki markdown files found in {codewiki_dir}")
+    print("   Generate the wiki markdown first, then rerun the viewer.")
+
+    if not sys.stdin.isatty():
+        print("\n   Ask your agent to use the codewiki skill for this repository.")
+        return False
+
+    answer = input("\nGenerate the wiki first with the codewiki skill? [y/N] ").strip().lower()
+    if answer in {"y", "yes"}:
+        print("\nRun the codewiki skill for this repository, then rerun:")
+        print(f"   python3 {Path(__file__).resolve()} --codewiki-dir {codewiki_dir} --serve")
+    else:
+        print("\nViewer not started.")
+
+    return False
+
+
 # ── Frontmatter injection ──
 
 def add_frontmatter(md_content: str, title: str, short_title: str,
@@ -155,7 +178,7 @@ def prepare_build_dir(codewiki_dir: Path, viewer_dir: Path) -> tuple:
 
     md_files = discover_markdown_files(codewiki_dir)
     if not md_files:
-        print(f"❌ No markdown files found in {codewiki_dir}")
+        confirm_wiki_generation_needed(codewiki_dir)
         sys.exit(1)
 
     page_count = 0
@@ -190,7 +213,7 @@ def prepare_build_dir(codewiki_dir: Path, viewer_dir: Path) -> tuple:
 
     # Create index page that redirects to first page
     index_content = f"""---
-title: "RovoDev Wiki"
+title: "CodeWiki"
 permalink: /
 layout: base.njk
 ---
@@ -258,7 +281,7 @@ def generate_site(codewiki_dir: Path, output_dir: Path, serve: bool = False, por
     """Generate the complete HTML site."""
     viewer_dir = Path(__file__).parent.resolve()
 
-    print("📚 RovoDev Wiki Generator")
+    print("📚 CodeWiki HTML Viewer")
     print(f"   Source:  {codewiki_dir}")
     print(f"   Output:  {output_dir}")
 
@@ -282,7 +305,7 @@ def generate_site(codewiki_dir: Path, output_dir: Path, serve: bool = False, por
 # ── CLI ──
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate RovoDev Wiki HTML viewer')
+    parser = argparse.ArgumentParser(description='Generate CodeWiki HTML viewer')
     parser.add_argument('--codewiki-dir', type=str, default='codewiki',
                         help='Path to codewiki markdown directory (default: codewiki)')
     parser.add_argument('--output-dir', type=str, default='codewiki/_site',
@@ -297,7 +320,7 @@ def main():
     output_dir = Path(args.output_dir).resolve()
 
     if not codewiki_dir.exists():
-        print(f"❌ CodeWiki directory not found: {codewiki_dir}")
+        confirm_wiki_generation_needed(codewiki_dir)
         sys.exit(1)
 
     generate_site(codewiki_dir, output_dir, serve=args.serve, port=args.port)
