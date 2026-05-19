@@ -4,7 +4,7 @@ AI-SDLC skills and general-purpose skills that I use everyday.
 
 # Usage
 
-## For large features
+## For large features ([flowchart](docs/devskills-decision-tree-flowchart.md))
 
 1. /write-prd
 2. /prd-to-rfc (Optional if Tech design doc is needed)
@@ -15,7 +15,7 @@ AI-SDLC skills and general-purpose skills that I use everyday.
 7. /code-review
 8. /final-review-and-create-pr
 
-## For medium/small features
+## For medium/small features ([flowchart](docs/devskills-workflow-flowchart.md))
 
 1. /brainstorm-feature
 2. /feature-to-rfc (Optional if Tech design doc is needed)
