@@ -1,0 +1,40 @@
+<!-- Sidebar Overlay (mobile) -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/30 z-30 hidden lg:hidden" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="sidebar-panel fixed top-14 left-0 bottom-0 w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-40 overflow-y-auto lg:translate-x-0">
+    <nav class="py-4 px-3">
+        <!-- Top-level pages -->
+        {% for page in collections.topPages %}
+        <a href="{{ page.url }}" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 truncate">
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            {{ page.data.shortTitle or page.data.title }}
+        </a>
+        {% endfor %}
+
+        <!-- Deep Dive section -->
+        {% if collections.deepDivePages.length > 0 %}
+        <div class="mt-5 mb-1">
+            <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-90')"
+                    class="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                <svg class="w-3 h-3 transition-transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
+                </svg>
+                Deep Dive Modules
+            </button>
+            <div class="ml-2 space-y-0.5">
+                {% for page in collections.deepDivePages %}
+                <a href="{{ page.url }}" class="sidebar-link flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 truncate">
+                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                    {{ page.data.shortTitle or page.data.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </nav>
+</aside>
