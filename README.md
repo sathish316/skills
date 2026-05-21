@@ -41,12 +41,42 @@ npx skills@latest add sathish316/skills --skill '*'
 8. /finish-work-*-and-create-pr (for each issue or task if needed) 
 9. /apply-pr-comments (for each issue or task if needed)
 
+(Steps marked in * are optional)
+
+```mermaid
+flowchart TD
+    A[brainstorm-feature] --> B["feature-to-rfc*"]
+    B --> C[feature-to-issues]
+    C --> D["issue-to-tasks*"]
+    D --> D1["markco-spec-feedback"]
+    D1 --> E{implementation path}
+    E --> F[implement-in-feature-branch]
+    E --> G[implement-in-worktree]
+    E --> H[implement-tasks-using-subagents]
+    F --> I[code-simplify]
+    G --> I
+    H --> I
+    I --> J[code-review]
+    J --> L["finish-work-in-branch-and-create-pr*"]
+    J --> M["finish-work-in-worktree-and-create-pr*"]
+    L --> N["apply-pr-comments*"]
+    M --> N
+    N --> O([done])
+```
+
+
 ## For minor features
 
 1. Just ask the agent to *code* the feature
 2. /code-simplify
 3. /code-review
 4. /create-pr
+
+## Standalone skills
+
+1. pr-reviewer
+
+Review remote github/bitbucket PR and post comment
 
 # Resources
 
