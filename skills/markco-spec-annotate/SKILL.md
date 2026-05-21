@@ -1,5 +1,5 @@
 ---
-name: markco-spec-feedback
+name: markco-spec-annotate
 description: Read Markco markdown comments from feature and issue planning files, confirm the exact file scope with the user, incorporate unresolved feedback into the markdown, and mark addressed Markco comments as resolved. Use when the user asks to handle Markco comments, annotated feedback, markdown feedback, or reviewer comments on feature/issue specs.
 ---
 
