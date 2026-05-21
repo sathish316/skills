@@ -44,6 +44,7 @@ Before reviewing, quickly establish:
 - Remote provider and repository identity
 - Available PR tools or CLIs
 - Whether the user requested local-only output or posting back to the PR
+- Whether the user explicitly requested that tests and testing-related feedback be skipped
 
 Useful discovery commands when shell access exists:
 
@@ -144,11 +145,17 @@ If comments cannot be read, continue with a fresh local review and state that ex
 
 ### Step 6: Analyze the Code
 
+If the user explicitly asks to skip tests, not run tests, ignore tests, omit testing feedback, or avoid test-related comments:
+- Do not run test commands.
+- Do not add comments about missing tests, test coverage, test quality, test strategy, or test gaps.
+- Omit the `### Testing` section from the review.
+- Ignore testing-related preferences in the custom preference sections for this review.
+
 Review the diff for:
 - **Merge conflicts**: unresolved conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`). Treat these as critical blockers.
 - **Correctness**: logic errors, edge cases, off-by-one errors, error handling, null/empty states, concurrency, transaction boundaries, and data consistency.
 - **Maintainability**: clarity, naming, complexity, coupling, cohesion, duplication, and whether the change fits existing architecture.
-- **Testing**: missing coverage, weak assertions, untested edge cases, brittle tests, and whether tests exercise the behavior changed by the PR.
+- **Testing**: missing coverage, weak assertions, untested edge cases, brittle tests, and whether tests exercise the behavior changed by the PR. Skip this category entirely when the user explicitly disables testing feedback.
 - **Security**: input validation, authentication/authorization, secrets, unsafe deserialization, injection, data exposure, and dependency risk.
 - **Performance**: unnecessary I/O, N+1 queries, avoidable allocations, expensive loops, cache behavior, and algorithmic complexity.
 - **Provider and framework conventions**: repository-specific patterns, framework idioms, and the preference sections below.
@@ -306,8 +313,9 @@ Use this format when an existing review marker was found and the head SHA change
 
 Formatting rules:
 - Omit empty sections except Summary and Verdict.
-- Use `Request changes` for correctness, security, data loss, broken tests, unresolved conflicts, or likely production regressions.
-- Use `Approve with suggestions` for non-blocking maintainability, style, or test improvements.
+- Omit the `### Testing` section when the user explicitly asks to skip tests or testing-related feedback.
+- Use `Request changes` for correctness, security, data loss, unresolved conflicts, or likely production regressions. Include broken tests in this category only when testing feedback has not been explicitly disabled.
+- Use `Approve with suggestions` for non-blocking maintainability or style improvements. Include test improvements only when testing feedback has not been explicitly disabled.
 - Use `Approve` only when no blocking concerns remain.
 
 ## Step 8: Post the Review (Optional)
@@ -365,6 +373,7 @@ Respect these request patterns:
 | "just the summary" | Provide a shorter review without detailed line-by-line analysis. |
 | "focus on security" | Weight security analysis more heavily and lead with security findings. |
 | "focus on testing" | Weight test coverage and test quality more heavily. |
+| "skip tests" / "don't run tests" / "ignore tests" / "no testing comments" / "omit testing feedback" | Do not run test commands, omit the `### Testing` section, and avoid comments about missing tests, coverage, test quality, or test strategy. |
 | "no annotations" / "skip inspection" | Omit the human-inspection callouts. |
 | "annotations only" / "inspection only" | Skip the full review and produce only consolidated human-inspection callouts with file/line context. |
 | "include drafts" | Include draft PRs in discovery and review. |
