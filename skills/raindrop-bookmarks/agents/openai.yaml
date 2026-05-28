@@ -1,0 +1,4 @@
+interface:
+  display_name: "Raindrop Bookmarks"
+  short_description: "Manage Raindrop.io bookmarks by API"
+  default_prompt: "Use $raindrop-bookmarks to search, save, tag, and organize my Raindrop.io bookmarks."

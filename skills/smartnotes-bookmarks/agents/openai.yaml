@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smartnotes Bookmarks"
+  short_description: "Turn links into Smartnotes vault notes"
+  default_prompt: "Use $smartnotes-bookmarks to summarize this link and file it in my Smartnotes Obsidian vault."
