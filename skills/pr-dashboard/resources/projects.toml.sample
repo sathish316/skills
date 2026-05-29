@@ -1,0 +1,13 @@
+[[projects]]
+name = "spring-framework"
+provider = "gh"
+url = "https://github.com/spring-projects/spring-framework"
+owner = "spring-projects"
+repo = "spring-framework"
+
+[[projects]]
+name = "elasticsearch"
+provider = "gh"
+url = "https://github.com/elastic/elasticsearch"
+owner = "elastic"
+repo = "elasticsearch"
