@@ -1,6 +1,6 @@
 ---
 name: finish-work-in-branch-and-create-pr
-description: Finish completed work on the current git branch by confirming source and target branches, diffing against the target branch, generating a PR summary, and either creating a GitHub or Bitbucket pull request or merging locally. Use when implementation is complete and the user wants to finish work, create a PR, open a pull request, merge locally, or prepare branch changes for review.
+description: Finish completed work on the current git branch by confirming source and target branches, marking current issue/task/feature index markdown as done when present, diffing against the target branch, generating a PR summary, and either creating a GitHub or Bitbucket pull request or merging locally. Use when implementation is complete and the user wants to finish work, create a PR, open a pull request, merge locally, or prepare branch changes for review.
 ---
 
 # Finish Work In Branch And Create PR
@@ -12,6 +12,7 @@ Finish completed work from the current git branch by verifying state, confirming
 - Do not create a PR until the user confirms the current branch, target branch, origin provider, and repository URL.
 - Do not merge locally until the user confirms the target branch.
 - Do not proceed if tests or required verification fail unless the user explicitly accepts the risk.
+- Do not mark issue, task, or feature index markdown as done until verification has passed, or until the user explicitly accepts proceeding with known failures.
 - Do not force-push unless the user explicitly asks.
 - Do not delete branches or clean up worktrees in this skill.
 
@@ -83,7 +84,27 @@ Common defaults:
 
 If verification fails, report the failing command and failure summary. Stop before PR creation or local merge unless the user explicitly accepts proceeding with known failures.
 
-### 5. Confirm Origin Provider And Repository URL
+### 5. Mark Current Issue And Task Done
+
+Before creating a PR or merging locally, update completion state for the work item markdown files that correspond to the branch.
+
+Find the current issue and task files from the user's request, branch name, recent commits, or repository conventions. Common locations include `features/`, `issues/`, `tasks/`, `.agents/issues/`, `.agents/tasks/`, and feature-specific task directories. If a task file references a parent issue or feature index, follow those links. If the matching files are ambiguous, ask the user which issue/task should be marked done.
+
+Update all present matching files:
+
+- Issue markdown file: mark the current issue as done.
+- Task markdown file: mark the current task as done.
+- Feature index markdown file, if present: mark the corresponding issue/task entry as done.
+
+Preserve the existing status format. For example:
+
+- Change unchecked checklist entries for the completed issue/task from `[ ]` to `[x]`.
+- Change frontmatter/status labels such as `status: todo`, `status: in_progress`, `Status: In Progress`, or `State: Open` to the repository's done/completed equivalent.
+- If the file uses a table, update only the row for the current issue or task.
+
+Do not rewrite unrelated entries, reorder feature indexes, or mark sibling tasks done unless they were part of the completed work. Include these markdown status updates in the branch changes before PR creation or local merge.
+
+### 6. Confirm Origin Provider And Repository URL
 
 Before creating a PR, ask the user to confirm:
 
@@ -100,7 +121,7 @@ If multiple git remotes exist, show them and ask which remote/repo should receiv
 git remote -v
 ```
 
-### 6. Diff Against Target Branch
+### 7. Diff Against Target Branch
 
 Fetch the target branch, then diff the current branch against it:
 
@@ -113,7 +134,7 @@ git log --oneline <target-branch>..HEAD
 
 Use the diff to prepare a PR summary. Focus on user-visible behavior, important implementation changes, tests, migrations, and risks.
 
-### 7. Prepare PR Summary
+### 8. Prepare PR Summary
 
 Create a concise PR summary from the target-branch diff:
 
@@ -134,11 +155,12 @@ Create a concise PR summary from the target-branch diff:
 - Target branch: `<target-branch>`
 - Source branch: `<source-branch>`
 - Files changed: <count or short list>
+- Work item status updates: <issue/task/feature index files marked done, or "none found">
 ```
 
 If verification was not run, mark it explicitly as not run and state why.
 
-### 8. Present Finish Options
+### 9. Present Finish Options
 
 After verification and diff summary, present exactly these options:
 
@@ -154,7 +176,7 @@ Which option?
 
 Do not include a do-nothing option in this skill.
 
-### 9. Execute Selected Option
+### 10. Execute Selected Option
 
 #### Option 1: Create a GitHub PR
 
@@ -238,6 +260,7 @@ After completion, report:
 - PR URL, if created
 - Merge commit or result, if merged locally
 - Verification commands and results
+- Issue/task/feature index markdown files marked done, if any
 - Any risks, skipped checks, or follow-up needed
 
 ## Principles
@@ -245,5 +268,6 @@ After completion, report:
 - Confirm branch and target before acting.
 - Confirm provider and repository before creating PRs.
 - Base PR summaries on actual diffs, not memory.
+- Mark the current issue, task, and feature index done when those markdown files are present.
 - Prefer passing verification before PR or merge.
 - Keep finish-work focused: no worktree cleanup, no branch deletion, no discard flow.
