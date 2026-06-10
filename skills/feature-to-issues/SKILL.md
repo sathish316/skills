@@ -128,14 +128,12 @@ Do not modify the feature file by default. Maintain the feature-to-issues associ
 
 ## Association Format
 
-Derive `feature_id` from the feature file stem unless the feature file already defines a stable ID in frontmatter. Use the same `feature_id` in the issue index and every issue file.
+Derive the feature id from the feature file stem unless the feature file already defines a stable `id` in frontmatter. Issue ids are `<feature-id>-<NNN>`.
 
-Each issue file should include:
+Frontmatter stays minimal (`artifact`, `id`, `title`, `status`, `created`); the feature association lives in the document body of every issue:
 
-- `parent_feature`: relative path to the feature file
-- `feature_id`: stable feature identifier
-- `issue_id`: `<feature_id>-<NNN>`
-- `blocked_by`: issue IDs, not filenames; use an empty list when there are no blockers
+- **Parent feature**: relative path to the feature file
+- **Blocked by**: issue IDs, not filenames; `None` when there are no blockers
 
 This keeps each issue portable while preserving the relationship back to the feature.
 
@@ -151,10 +149,11 @@ Issue directory: `../issues/<feature-file-stem>/`
 
 <issue-index-template>
 ---
-feature_id: <feature-file-stem>
-parent_feature: <relative-path-to-feature-file>
-issue_count: <number>
-status: planned
+artifact: issue-index
+id: <feature-file-stem>-issues
+title: Issues for <feature title>
+status: not-started        # not-started | in-progress | done
+created: <YYYY-MM-DD>
 ---
 
 # Issues for Feature: <feature title>
@@ -165,7 +164,7 @@ Parent feature: `<relative-path-to-feature-file>`
 
 | Issue | Type | Status | Blocked By | Title |
 | --- | --- | --- | --- | --- |
-| [<feature-id>-001](001-<issue-slug>.md) | HITL / AFK | planned | None | <issue title> |
+| [<feature-id>-001](001-<issue-slug>.md) | HITL / AFK | not-started | None | <issue title> |
 
 ## Notes
 
@@ -174,18 +173,17 @@ Parent feature: `<relative-path-to-feature-file>`
 
 <issue-template>
 ---
-feature_id: <feature-file-stem>
-parent_feature: <relative-path-to-feature-file>
-issue_id: <feature-id>-<NNN>
-type: HITL / AFK
-status: planned
-blocked_by: []
+artifact: issue
+id: <feature-id>-<NNN>
+title: <title>
+status: not-started        # not-started | in-progress | done
+created: <YYYY-MM-DD>
 ---
 
 # Issue <NNN>: <title>
 
 **Type**: HITL / AFK  
-**Status**: planned  
+**Status**: not-started  
 **Parent feature**: `<relative-path-to-feature-file>`  
 **Blocked by**: <issue-id> / None - can start immediately
 
@@ -219,6 +217,16 @@ Implementation notes, likely files, existing patterns to follow, risks, or human
 </issue-template>
 
 If there are no notes for an issue, write `None`.
+
+## Status Frontmatter Contract
+
+All planning artifacts (features, issues, tasks) share one minimal frontmatter: exactly `artifact`, `id`, `title`, `status`, `created` — nothing more. Relationships (parent feature, blockers) live in the document body. Rules:
+
+- `status` uses exactly `not-started`, `in-progress`, or `done` — no other vocabulary.
+- New issues and indexes start at `status: not-started`.
+- When work on an issue starts or finishes, update its frontmatter `status` and keep the index's `status` and Issue Index table row in sync.
+- Update the parent feature file's frontmatter `status` to `in-progress` once any issue starts (not when issues are merely created), and to `done` when all issues are done.
+- Reporting skills read only the frontmatter to determine status; they fall back to reading the whole file only when the frontmatter is missing or lacks `status`. Keep it accurate.
 
 ## Principles
 

@@ -65,6 +65,14 @@ Save the approved task list to a file in the format and location specified by th
 Use the task file template below.
 
 <task-file-template>
+---
+artifact: tasks
+id: <issue-id>-tasks
+title: Tasks for <issue-id>: <issue-title>
+status: not-started        # not-started | in-progress | done
+created: <YYYY-MM-DD>
+---
+
 # Tasks for #<issue-number>: <issue-title>
 
 Parent issue: #<issue-number>
@@ -72,7 +80,7 @@ Parent PRD: #<prd-issue-number>
 
 ## Tasks
 
-### <n>. <Task title>
+### <n>. [ ] <Task title>
 
 **Type**: WRITE / TEST / MIGRATE / CONFIG / REVIEW  
 **Output**: <what exists or passes when done>  
@@ -82,5 +90,14 @@ Parent PRD: #<prd-issue-number>
 
 ---
 </task-file-template>
+
+## Status Frontmatter Contract
+
+All planning artifacts (features, issues, tasks) share one minimal frontmatter: exactly `artifact`, `id`, `title`, `status`, `created` — nothing more. Relationships (parent issue, parent PRD) and task progress live in the document body. Rules:
+
+- `status` uses exactly `not-started`, `in-progress`, or `done` — no other vocabulary.
+- New task files start at `status: not-started`.
+- Whoever completes a task marks its heading checkbox (`### <n>. [ ]` → `### <n>. [x]`) and moves the frontmatter `status` to `in-progress` (first task) or `done` (last task) in the same change.
+- Reporting skills read only the frontmatter to determine status; they fall back to reading the whole file only when the frontmatter is missing or lacks `status`. Keep it accurate.
 
 Do NOT modify the parent issue or the parent PRD.

@@ -87,6 +87,14 @@ Ask the user to choose or revise the approach before writing the final feature d
 After the user approves an approach, write the feature definition using the template below. Scale detail to the feature size: concise for small features, more explicit for medium features.
 
 <feature-definition-template>
+---
+artifact: feature
+id: <feature-file-stem, e.g. 2026-05-06-search-filters>
+title: <feature name>
+status: not-started        # not-started | in-progress | done
+created: <YYYY-MM-DD>
+---
+
 # Feature: <feature name>
 
 ## Summary
@@ -165,6 +173,15 @@ High-level notes for future planning: likely modules, patterns to follow, migrat
 </feature-definition-template>
 
 If there are no open questions, write `None`.
+
+### Status frontmatter contract
+
+All planning artifacts (features, issues, tasks) share one minimal frontmatter: exactly `artifact`, `id`, `title`, `status`, `created` — nothing more. Relationships (parent plan/feature/issue, blockers) live in the document body, not the frontmatter. Rules:
+
+- `status` uses exactly `not-started`, `in-progress`, or `done` — no other vocabulary.
+- New feature definitions start at `status: not-started`.
+- Any skill or agent that starts or finishes work on the feature must update `status` in the same change.
+- Reporting skills read only the frontmatter to determine status; they fall back to reading the whole file only when the frontmatter is missing or lacks `status`. Keep it accurate.
 
 Present the draft to the user before saving it. Ask whether the scope, behavior, and acceptance criteria look right. Revise until the user approves the feature definition. Not all sections are required for every feature - Use your best judgement to decide the sections required based on the size and complexity of the feature.
 
