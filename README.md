@@ -64,6 +64,42 @@ flowchart TD
     N --> O([done])
 ```
 
+## For medium/small features with OpenSpec and Plannotator flows ([flowchart](docs/devskills-workflow-flowchart.md))
+
+1. /brainstorm-feature
+2. /feature-to-rfc (Optional if Tech design doc is needed)
+3. /feature-to-issues
+4. Spec and Implement each Issue
+    4.1 /opsx:propose to create specs for a feature or issue
+    4.2 /plannotator-last to review specs created for feature or issue
+    4.3 /opsx:apply to implement a feature or issue
+    4.4 /opsx:sync and /opsx:archive to merge delta specs with overall specs and archive delta specs and todos
+5. /code-simplify
+6. /code-review
+7. /finish-work-*-and-create-pr (for each issue or task if needed) 
+8. /apply-pr-comments (for each issue or task if needed)
+
+(Steps marked in * are optional)
+
+```mermaid
+flowchart TD
+    A[brainstorm-feature] --> B["feature-to-rfc*"]
+    B --> C[feature-to-issues]
+    C --> D{for each issue}
+    D --> E["opsx:propose"]
+    E --> F["plannotator-last"]
+    F --> G{"spec approved?"}
+    G -- no --> E
+    G -- yes --> H["opsx:apply"]
+    H --> I["opsx:sync"]
+    I --> J["opsx:archive"]
+    J --> K[code-simplify]
+    K --> L[code-review]
+    L --> M["finish-work-*-and-create-pr*"]
+    M --> N["apply-pr-comments*"]
+    N --> O([done])
+```
+
 
 ## For minor features
 
