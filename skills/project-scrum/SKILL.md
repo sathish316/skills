@@ -103,10 +103,10 @@ Output a single scrum report, most-important-first:
 | core-foundation | 🔵 in-progress | 2/4 |
 
 ## Issues
-| Issue | Feature | Status | Tasks | OpenSpec |
-| --- | --- | --- | --- | --- |
-| core-foundation-001 | core-foundation | 🟢 done | 5/5 | 1 archived |
-| core-foundation-002 | core-foundation | 🔵 in-progress | 2/6 | add-config 3/7 tasks |
+| Issue | Title | Feature | Status | Tasks | OpenSpec |
+| --- | --- | --- | --- | --- | --- |
+| core-foundation-001 | Scaffold TypeScript project | core-foundation | 🟢 done | 5/5 | 1 archived |
+| core-foundation-002 | Config loading with defaults | core-foundation | 🔵 in-progress | 2/6 | add-config 3/7 tasks |
 
 ## Drift
 <status-field vs derived-status mismatches, or "None">
