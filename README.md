@@ -114,6 +114,10 @@ flowchart TD
 
 Review remote github/bitbucket PR and post comment
 
+2. project-scrum
+
+Hierarchically rolls up project status from OpenSpec specs → tasks → issues → features → plans into a single color-coded scrum report. Run `/project-scrum` when you want an instant snapshot of where every layer stands — what shipped, what's in flight, and what's blocked — without opening a single planning file.
+
 # Resources
 
 Other similar skills resources:
