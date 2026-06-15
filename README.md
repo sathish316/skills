@@ -81,6 +81,29 @@ flowchart TD
 
 (Steps marked in * are optional)
 
+If you prefe the simple 2-level hierarchy of feature -> changes, you can use the following flowchart:
+
+```mermaid
+flowchart TD
+    A[brainstorm-feature or grill-me] --> AR["plannotator-*"]
+    AR --> B["feature-to-rfc*"]
+    B --> C[feature-to-changes]
+    C --> D{for each change}
+    D --> E["plannotator-*"]
+    E --> G{"spec approved?"}
+    G -- no --> E
+    G -- yes --> H["opsx:apply"]
+    H --> I["opsx:sync"]
+    I --> J["opsx:archive"]
+    J --> K[code-simplify]
+    K --> L[code-review]
+    L --> M["finish-work-*-and-create-pr*"]
+    M --> N["apply-pr-comments*"]
+    N --> O([done])
+```
+
+If you prefer the 3-level hierarchy of feature -> issues -> changes, you can use the following flowchart:
+
 ```mermaid
 flowchart TD
     A[brainstorm-feature or grill-me] --> B["feature-to-rfc*"]
