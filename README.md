@@ -83,7 +83,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[brainstorm-feature] --> B["feature-to-rfc*"]
+    A[brainstorm-feature or grill-me] --> B["feature-to-rfc*"]
     B --> C[feature-to-issues]
     C --> D{for each issue}
     D --> E["opsx:propose"]
@@ -117,6 +117,10 @@ Review remote github/bitbucket PR and post comment
 2. project-scrum
 
 Hierarchically rolls up project status from OpenSpec specs → tasks → issues → features → plans into a single color-coded scrum report. Run `/project-scrum` when you want an instant snapshot of where every layer stands — what shipped, what's in flight, and what's blocked — without opening a single planning file.
+
+3. grill-me
+
+Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved. Source: `resources/mattpocock-skills/grill-me/SKILL.md`, from [Matt Pocock's `grill-me` skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md).
 
 # Resources
 
