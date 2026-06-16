@@ -89,7 +89,7 @@ Keep exploration bounded — the goal is change planning, not implementation.
 
 Break the feature into capability-focused changes. Each change should represent one independently understandable and independently verifiable part of the feature, sized to flow cleanly through one OpenSpec `propose → apply → archive` cycle.
 
-Apply the same splitting judgement as `feature-to-issues` — do not force tracer-bullet vertical slices; a feature definition's natural breakdown may be by capability, state, workflow, integration, or prerequisite.
+When splitting changes, prefer tracer-bullet slices where they make sense, but use your judgment — a feature's natural breakdown might instead follow capability, state, workflow, integration, or prerequisite, as appropriate.
 
 A good change may be:
 
