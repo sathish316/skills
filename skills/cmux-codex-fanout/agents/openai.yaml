@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cmux Codex Fanout"
+  short_description: "Launch parallel Codex exec jobs in cmux."
+  default_prompt: "Fan out this list into parallel cmux tabs using codex exec."
