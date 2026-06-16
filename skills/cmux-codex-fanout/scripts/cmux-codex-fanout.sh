@@ -10,15 +10,17 @@ Options:
   --file PATH           Read newline-separated input items from PATH.
   --skill NAME          Prefix each prompt with "Use $NAME." to trigger a skill.
   --prompt TEXT         Prompt template. {{item}} is replaced with each item.
-  --layout LAYOUT       new-workspaces or right-stack. Default: new-workspaces.
-  --cd DIR              Working directory passed to codex exec.
-  --model MODEL         Model passed to codex exec.
-  --profile PROFILE     Profile passed to codex exec.
-  --title-prefix TEXT   Prefix for cmux workspace titles. Default: codex.
+  --mode MODE           interactive, daemon, or exec. Default: ask, then interactive.
+  --cd DIR              Working directory passed to codex.
+  --model MODEL         Model passed to codex.
+  --profile PROFILE     Profile passed to codex.
+  --title-prefix TEXT   Prefix for launch log labels. Default: codex.
   --dry-run             Print commands without launching cmux.
   -h, --help            Show this help.
 
-Items can come from --file, stdin, or positional arguments. Blank lines are ignored.
+The current cmux workspace is split into one left panel plus a right-side
+vertical stack with one Codex pane per input item. Items can come from --file,
+stdin, or positional arguments. Blank lines are ignored.
 USAGE
 }
 
@@ -69,7 +71,10 @@ codex_command_for_item() {
   local item_prompt
   item_prompt=$(prompt_for_item "$item")
 
-  local cmd="codex exec"
+  local cmd="codex"
+  if [[ "$mode" == "daemon" || "$mode" == "exec" ]]; then
+    cmd+=" exec"
+  fi
   if [[ -n "$cd_dir" ]]; then
     cmd+=" --cd $(shell_quote "$cd_dir")"
   fi
@@ -82,6 +87,37 @@ codex_command_for_item() {
   cmd+=" $(shell_quote "$item_prompt")"
 
   printf "%s" "$cmd"
+}
+
+normalize_mode() {
+  case "$1" in
+    interactive|i|'')
+      printf "interactive"
+      ;;
+    daemon|d|exec|e)
+      printf "daemon"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+choose_mode() {
+  local selected=$mode
+
+  if [[ -z "$selected" ]]; then
+    if [[ "$dry_run" -eq 1 ]]; then
+      selected=interactive
+    elif [[ -r /dev/tty ]]; then
+      printf 'Run Codex panes in interactive mode or daemon/exec mode? [interactive] ' > /dev/tty
+      IFS= read -r selected < /dev/tty
+    else
+      selected=interactive
+    fi
+  fi
+
+  mode=$(normalize_mode "$selected") || die "--mode must be interactive, daemon, or exec"
 }
 
 run_command_in_surface() {
@@ -100,7 +136,7 @@ run_command_in_surface() {
 file=
 skill=
 prompt=
-layout=new-workspaces
+mode=
 cd_dir=
 model=
 profile=
@@ -125,9 +161,9 @@ while [[ $# -gt 0 ]]; do
       prompt=$2
       shift 2
       ;;
-    --layout)
-      [[ $# -ge 2 ]] || die "--layout requires a value"
-      layout=$2
+    --mode)
+      [[ $# -ge 2 ]] || die "--mode requires a value"
+      mode=$2
       shift 2
       ;;
     --cd)
@@ -176,10 +212,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$prompt" ]] || die "--prompt is required"
-case "$layout" in
-  new-workspaces|right-stack) ;;
-  *) die "--layout must be new-workspaces or right-stack" ;;
-esac
 
 if [[ -n "$file" ]]; then
   [[ -r "$file" ]] || die "input file not readable: $file"
@@ -197,66 +229,74 @@ if [[ ${#items[@]} -eq 0 && ! -t 0 ]]; then
 fi
 
 [[ ${#items[@]} -gt 0 ]] || die "provide at least one item via --file, stdin, or arguments"
+choose_mode
 
 command -v codex >/dev/null 2>&1 || die "codex not found on PATH"
 if [[ "$dry_run" -eq 0 ]]; then
   command -v cmux >/dev/null 2>&1 || die "cmux not found on PATH"
   cmux ping >/dev/null 2>&1 || die "cmux socket is not available; start cmux first or set CMUX_SOCKET_PATH/CMUX_SOCKET_PASSWORD"
+  current_workspace_output=$(cmux current-workspace)
+  workspace_ref=$(extract_ref workspace "$current_workspace_output")
+  workspace_ref=${workspace_ref:-${CMUX_WORKSPACE_ID:-}}
+  [[ -n "$workspace_ref" ]] || die "could not determine current cmux workspace; run from inside cmux or set CMUX_WORKSPACE_ID"
+else
+  workspace_ref='<current-workspace>'
 fi
 
-if [[ "$layout" == "new-workspaces" ]]; then
-  for item in "${items[@]}"; do
-    cmd=$(codex_command_for_item "$item")
-    title="${title_prefix}: $(slugify "$item")"
+created_surfaces=()
+created_titles=()
+created_commands=()
+split_target_surface=
 
+index=0
+for item in "${items[@]}"; do
+  cmd=$(codex_command_for_item "$item")
+  title="${title_prefix}: $(slugify "$item")"
+
+  if [[ "$index" -eq 0 ]]; then
     if [[ "$dry_run" -eq 1 ]]; then
-      printf 'cmux new-workspace --command %s\n' "$(shell_quote "$cmd")"
-      printf 'cmux rename-workspace %s %s\n' "$(shell_quote "$title")" '# targets the new workspace when cmux returns its ref'
+      printf 'cmux new-pane --type terminal --direction right --workspace %s\n' "$workspace_ref"
+      surface_ref='<right-surface-1>'
     else
-      workspace_output=$(cmux new-workspace --command "$cmd")
-      workspace_ref=$(extract_ref workspace "$workspace_output")
-      if [[ -n "$workspace_ref" ]]; then
-        cmux rename-workspace --workspace "$workspace_ref" "$title" >/dev/null 2>&1 || true
-      else
-        cmux rename-workspace "$title" >/dev/null 2>&1 || true
-      fi
-      printf 'launched: %s\n' "$title"
-    fi
-  done
-else
-  if [[ "$dry_run" -eq 1 ]]; then
-    workspace_ref='<current-workspace>'
-  else
-    current_workspace_output=$(cmux current-workspace)
-    workspace_ref=$(extract_ref workspace "$current_workspace_output")
-    workspace_ref=${workspace_ref:-${CMUX_WORKSPACE_ID:-}}
-    [[ -n "$workspace_ref" ]] || die "could not determine current cmux workspace; run from inside cmux or set CMUX_WORKSPACE_ID"
-  fi
-
-  index=0
-  for item in "${items[@]}"; do
-    cmd=$(codex_command_for_item "$item")
-    direction=down
-    if [[ "$index" -eq 0 ]]; then
-      direction=right
-    fi
-    title="${title_prefix}: $(slugify "$item")"
-
-    if [[ "$dry_run" -eq 1 ]]; then
-      printf 'cmux new-pane --type terminal --direction %s --workspace %s\n' "$direction" "$workspace_ref"
-      printf 'cmux respawn-pane --workspace %s --surface <new-surface> --command %s\n' "$workspace_ref" "$(shell_quote "$cmd")"
-    else
-      pane_output=$(cmux new-pane --type terminal --direction "$direction" --workspace "$workspace_ref")
+      pane_output=$(cmux new-pane --type terminal --direction right --workspace "$workspace_ref")
       surface_ref=$(extract_ref surface "$pane_output")
       pane_ref=$(extract_ref pane "$pane_output")
       if [[ -z "$surface_ref" && -n "$pane_ref" ]]; then
         surface_ref=$(extract_ref surface "$(cmux list-pane-surfaces --workspace "$workspace_ref" --pane "$pane_ref")")
       fi
-      [[ -n "$surface_ref" ]] || die "created pane for $title, but could not determine its terminal surface"
-      run_command_in_surface "$workspace_ref" "$surface_ref" "$cmd"
-      printf 'launched right-stack pane: %s\n' "$title"
+      [[ -n "$surface_ref" ]] || die "created first right pane for $title, but could not determine its terminal surface"
     fi
+  else
+    if [[ "$dry_run" -eq 1 ]]; then
+      printf 'cmux new-split down --workspace %s --surface %s\n' "$workspace_ref" "$split_target_surface"
+      surface_ref="<right-surface-$((index + 1))>"
+    else
+      pane_output=$(cmux new-split down --workspace "$workspace_ref" --surface "$split_target_surface")
+      surface_ref=$(extract_ref surface "$pane_output")
+      pane_ref=$(extract_ref pane "$pane_output")
+      if [[ -z "$surface_ref" && -n "$pane_ref" ]]; then
+        surface_ref=$(extract_ref surface "$(cmux list-pane-surfaces --workspace "$workspace_ref" --pane "$pane_ref")")
+      fi
+      [[ -n "$surface_ref" ]] || die "created right-stack split for $title, but could not determine its terminal surface"
+    fi
+  fi
 
-    index=$((index + 1))
-  done
-fi
+  created_surfaces+=("$surface_ref")
+  created_titles+=("$title")
+  created_commands+=("$cmd")
+  split_target_surface="$surface_ref"
+  index=$((index + 1))
+done
+
+for index in "${!created_surfaces[@]}"; do
+  surface_ref=${created_surfaces[$index]}
+  cmd=${created_commands[$index]}
+  title=${created_titles[$index]}
+
+  if [[ "$dry_run" -eq 1 ]]; then
+    printf 'cmux respawn-pane --workspace %s --surface %s --command %s\n' "$workspace_ref" "$surface_ref" "$(shell_quote "$cmd")"
+  else
+    run_command_in_surface "$workspace_ref" "$surface_ref" "$cmd"
+    printf 'launched pane: %s\n' "$title"
+  fi
+done
