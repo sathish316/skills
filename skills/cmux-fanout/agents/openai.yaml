@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cmux Fanout"
+  short_description: "Launch parallel agent panes in cmux."
+  default_prompt: "Fan out this list into right-side cmux panes with the selected agent."
