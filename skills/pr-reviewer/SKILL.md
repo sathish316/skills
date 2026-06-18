@@ -1,6 +1,6 @@
 ---
 name: pr-reviewer
-description: Review pull requests using the tools available in the current environment. Works with GitHub or Bitbucket, MCP tools or CLI tools, and local git diffs. Produces actionable review findings, optional human-inspection callouts, and optional PR comments.
+description: Review pull requests using the tools available in the current environment. Works with GitHub or Bitbucket, MCP tools or CLI tools, and local git diffs. Produces actionable review findings, optional human-inspection callouts, and optional PR comments including both an overall review comment and inline file/line comments when posting is requested.
 compatibility: Requires git access plus at least one way to inspect a pull request, such as GitHub tools, Bitbucket tools, host-provided MCP tools, provider CLIs, or local repository diffs.
 labels:
   - code-review
@@ -17,7 +17,7 @@ Use this skill when you need to:
 - Review the current branch's pull request
 - Review a specific pull request by URL, number, or ID
 - Analyze code changes for correctness, maintainability, testing, security, performance, and conventions
-- Optionally post the review back to the pull request using whatever posting tool is available
+- Optionally post the review back to the pull request using whatever posting tool is available, with both an overall comment and inline comments for file/line-specific findings
 - Re-review after code changes based on previous review feedback
 
 ## Tool Selection
@@ -239,6 +239,13 @@ If there are no callouts, omit the section.
 
 Lead with findings. Order concerns by severity and include file/line references whenever possible.
 
+Prepare two review artifacts:
+
+1. **Overall review comment** — a concise, repository-level summary with verdict, high-level concerns, and short references to affected files/lines.
+2. **Inline comment plan** — one provider-ready inline comment per actionable concern or suggestion that has a clear changed-file anchor. Each inline comment MUST include the changed file path and exact relevant line number in the provider-specific payload or command, not only in the comment text.
+
+Use inline comments for concrete issues tied to a specific changed line. Keep broad design notes, review context, human-inspection callouts, and findings without a reliable changed-line anchor in the overall comment only. Inline comments may be more detailed than the matching overall bullet: include the local context, why the line is risky, and the specific change that would address it.
+
 ### First Review
 
 Use this format when no existing review marker was found:
@@ -257,10 +264,10 @@ Use this format when no existing review marker was found:
 - [What is done well, if useful and specific.]
 
 ### Concerns
-- [Severity] `path/to/file.ext:123` - [Specific issue, risk, and suggested fix.]
+- [Severity] `path/to/file.ext:123` - [Short issue summary. Post the fuller explanation as an inline comment when posting.]
 
 ### Suggestions
-- `path/to/file.ext:45` - [Non-blocking improvement.]
+- `path/to/file.ext:45` - [Short improvement summary. Post the fuller explanation as an inline comment when posting.]
 
 ### 🔍 Areas for Human Inspection
 - 🔍 **[Category]** `path/to/file.ext:123-145` - [Why this needs human judgment and what to verify.]
@@ -295,10 +302,10 @@ Use this format when an existing review marker was found and the head SHA change
 - [Concern from previous review that is still present.]
 
 ### New Concerns
-- [New issue introduced or discovered in the updated code.]
+- [New issue introduced or discovered in the updated code. Include file/line when it can be posted inline.]
 
 ### Suggestions
-- [Non-blocking improvement.]
+- [Non-blocking improvement. Include file/line when it can be posted inline.]
 
 ### 🔍 Areas for Human Inspection
 - 🔍 **[Category]** `path/to/file.ext:123-145` - [Why this needs human judgment and what to verify.]
@@ -325,11 +332,16 @@ Only post back to the PR when the user asks, when the invocation explicitly expe
 When posting:
 - Use the available provider-specific comment tool, CLI, or API.
 - Prefer updating or replying to the existing `<!-- PR-REVIEWER -->` review thread if one exists.
-- Include the marker so future runs can detect the previous review.
-- Keep all human-inspection callouts in the main review comment unless the user asks for inline comments.
+- Post or update the overall review comment and include the marker so future runs can detect the previous review.
+- Also post inline comments for every actionable concern or suggestion that has a reliable changed-file and changed-line anchor.
+- Anchor each inline comment to the exact changed file path and relevant line number using the provider's inline-comment fields or flags. Do not post line-specific findings as floating/root comments when inline posting is available.
+- Keep the overall comment concise. Put detailed code context, risk explanation, and suggested fix in the inline comment.
+- If an issue spans multiple lines, anchor the inline comment to the most relevant changed line and mention the wider range in the comment text.
+- If a finding does not have a trustworthy changed-line anchor, keep it in the overall comment only.
+- Keep all human-inspection callouts in the main review comment unless the user explicitly asks for inline inspection comments.
 - End every posted PR comment with this exact footnote: `*This review was generated by PR Reviewer Skill.*`
 
-Comment body pattern:
+Overall comment body pattern:
 
 ```markdown
 <!-- PR-REVIEWER -->
@@ -339,6 +351,22 @@ Comment body pattern:
 ---
 *This review was generated by PR Reviewer Skill.*
 ```
+
+Inline comment body pattern:
+
+```markdown
+[Detailed finding tied to this line: what is wrong, why it matters, and what to change.]
+
+---
+*This review was generated by PR Reviewer Skill.*
+```
+
+Before posting inline comments, verify that each planned inline comment has:
+- `path`: the changed file path.
+- `line`: the relevant changed line number accepted by the provider.
+- `body`: the detailed inline text.
+
+If the provider supports batch review submission, submit the overall comment and inline comments in one review when possible. If it only supports individual comments, post the overall comment first, then the inline comments. If inline posting fails but the overall comment succeeds, report which inline comments could not be posted and include their path/line references in the final local response.
 
 If posting is unavailable or fails due to authentication or permissions, report the issue and keep the review local. Do not retry with a different provider unless the repository identity clearly supports it.
 
