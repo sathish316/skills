@@ -188,6 +188,42 @@ jj git push                       # rewrites C; the bookmark moves with it impli
 | Amend / incorporate PR feedback | `jj workspace update <ws> -r feature1`; `jj new`; `jj bookmark set feature1 -r @`; `jj git push` (or `jj edit feature1`; `jj describe -m "..."`; `jj git push`) |
 | Recover | `jj op log`; `jj undo` |
 
+## Bash/Zsh Aliases
+
+Optional shell shortcuts for the most-used commands above. Add the ones you want to `~/.bashrc` or `~/.zshrc` (or a sourced `~/.jj_aliases`), then reload with `source ~/.bashrc` / `source ~/.zshrc`.
+
+Guidelines:
+
+- Plain `alias` works when you only ever append arguments at the end (e.g. `jjbc my-bookmark`).
+- Use a shell **function** when an argument goes in the middle of the command (e.g. picking a workspace to switch). Functions work in both bash and zsh.
+- Keep the `jj`-prefixed naming so the shortcuts are easy to discover and don't collide with `git` habits.
+- These are conveniences only — the skill's documented full commands remain the source of truth.
+
+TODO — aliases to consider adding:
+
+- [ ] `alias jjs='jj status'` — current change, working-copy diff summary, conflicts.
+- [ ] `alias jjd='jj diff'` — preview working-copy changes.
+- [ ] `alias jjl='jj log'` — change graph.
+- [ ] `alias jjf='jj git fetch'` — import latest Git refs.
+- [ ] `alias jjsync='jj git fetch && jj rebase -d main'` — the steady-state sync loop (fetch + rebase onto `main`).
+- [ ] `alias jjbc='jj bookmark create'` — create a bookmark: `jjbc pr/feature1`.
+- [ ] `alias jjbs='jj bookmark set'` — move a bookmark: `jjbs pr/feature1 -r @`.
+- [ ] `alias jjpush='jj git push --bookmark'` — push a bookmark as a PR branch: `jjpush pr/feature1`.
+- [ ] `alias jjundo='jj undo'` and `alias jjop='jj op log'` — recovery.
+- [ ] Workspace switch (needs a function — argument is in the middle):
+
+```bash
+# usage: jjws <workspace> <revision>   e.g. jjws workspace1 feature1
+jjws() { jj workspace update "$1" -r "$2"; }
+```
+
+- [ ] Commit + describe in one step (function, takes a message):
+
+```bash
+# usage: jjci "commit message"
+jjci() { jj commit -m "$1"; }
+```
+
 ## Principles
 
 - Keep `main` protected: only rebase onto it; advance it only via PR merge.
