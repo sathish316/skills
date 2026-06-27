@@ -1,6 +1,6 @@
 ---
 name: jujutsu-trunk-based-development
-description: Trunk-based development with Jujutsu (jj) for simple or solo projects where you mostly push changes directly to main and only occasionally open a PR for review. Covers the core mental model (main tracks origin/main, bookmark points to a commit, PR is just a GitHub view), the direct-to-main loop, the occasional review-PR flow with three merge strategies (GitHub merge, local jj-native merge, hybrid), the constant fetch+rebase sync loop, graph visualization, and cleanup. Use for lightweight trunk-based workflows. Not for multi-agent workspaces, merge queues, or finishing branch work — see jujutsu-basics and the other jj skills for those.
+description: Trunk-based development with Jujutsu (jj) for simple or solo projects where you mostly push changes directly to main and only occasionally open a PR for review. Covers the core mental model (main tracks origin/main, bookmark points to a commit, PR is just a GitHub view), the direct-to-main loop, the occasional review-PR flow with three merge strategies (GitHub merge, local jj-native merge, hybrid), the constant fetch+rebase sync loop, graph visualization, cleanup, and an optional mentor mode that guides the user step by step instead of executing for them. Use for lightweight trunk-based workflows, and activate mentor mode when the user asks to "mentor me" or "help me do X in jujutsu". Not for multi-agent workspaces, merge queues, or finishing branch work — see jujutsu-basics and the other jj skills for those.
 ---
 
 # Jujutsu Trunk-Based Development
@@ -14,6 +14,33 @@ This skill is intentionally narrow. Do not mix it with the other `jj` skills:
 - `finish-work-in-jujutsu-workspace` — formal finish-and-PR flow.
 
 Use **this** skill when the answer to "do I need a PR for this change?" is usually "no".
+
+## Mentor Mode (optional)
+
+By default, just run the documented commands to get the user's trunk-based work done. **Switch to mentor mode** when the user asks to be taught or guided rather than have it done for them — e.g. "mentor me", "mentor me on jujutsu", "help me do X in jujutsu", "teach me", "walk me through", "I want to learn".
+
+In mentor mode, guide; do not silently execute:
+
+- Explain the **why** behind each step using this skill's mental model (the PR is a view of the graph; merge = move `main` forward; keep `main` fast-forwardable), not just the command to type.
+- Hand the user one step at a time. Show the exact command, say what it will do and what to expect afterward, and let *them* run it. Ask them to share the output before moving on.
+- Prefer guiding questions ("what does `jj status` show now?", "where do you want `main` to point?") over doing it for them.
+- Do **not** run state-changing commands (`jj bookmark set`, `jj git push`, merges, `jj rebase`) on their behalf while mentoring unless they explicitly ask you to take over. Read-only inspection (`jj status`, `jj log`) to orient is fine if useful.
+- Escalate help gradually: concept → which command → exact invocation → run it together only if they're stuck or ask.
+- Confirm understanding at decision points (direct push vs review PR; which of the three merge options) instead of choosing for them.
+
+Exit mentor mode and resume normal execution when the user says something like "just do it", "stop mentoring", or "take over".
+
+Suggested mentor response shape:
+
+```markdown
+**Goal:** [what we're trying to achieve]
+
+**Why:** [the relevant trunk-based / jj concept]
+
+**Your next step:** `<command>` — [what it does, what to expect]
+
+**Then tell me:** [what output to check before the next step]
+```
 
 ## Core Mental Model
 
