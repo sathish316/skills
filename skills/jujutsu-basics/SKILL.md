@@ -1,6 +1,6 @@
 ---
 name: jujutsu-basics
-description: Concise Jujutsu (jj) workflows and commands for agent development against a Git-backed repo. Covers creating an agent workspace, committing changes for a feature, creating a bookmark, opening a GitHub PR, and refetching/rebasing onto the latest main. Use when the user wants to work with jj, set up an isolated jj workspace per agent, push a jj bookmark as a PR branch, or sync local jj history with Git main.
+description: Concise Jujutsu (jj) workflows and commands for agent development against a Git-backed repo. Covers creating an agent workspace, committing changes for a feature, creating a bookmark, opening a GitHub PR, refetching/rebasing onto the latest main, and amending a feature to incorporate PR feedback. Use when the user wants to work with jj, set up an isolated jj workspace per agent, push a jj bookmark as a PR branch, sync local jj history with Git main, or update an existing PR after review feedback.
 ---
 
 # Jujutsu Basics
@@ -139,6 +139,43 @@ jj rebase
 
 This is the `jj` equivalent of `git fetch origin && git rebase origin/main`, but rebasing is first-class and descendant changes are rebased automatically. Repeat `jj git fetch` + `jj rebase` as the steady-state sync loop. Rebasing rewrites commits (new IDs) — this is normal in `jj`.
 
+## 6. Amend a Feature / Incorporate PR Feedback
+
+The PR is driven by the **bookmark**, not by whatever the workspace currently shows. To update an already-pushed feature, re-point the workspace at the feature, revise its history, move the bookmark, and push again — the existing PR updates automatically.
+
+Scenario: `feature1` bookmark points at `A → B → C` with a PR open, but the workspace has since moved on to other work (e.g. a `feature2` commit `D`). Feedback arrives on the `feature1` PR.
+
+### Option 1 (recommended): add a follow-up commit
+
+Switch the workspace back to the feature, add new commit(s), then move the bookmark forward. The in-progress work (`D`) is not lost — it still exists in history.
+
+```bash
+jj workspace update <workspace> -r feature1   # re-point this workspace at the feature1 tip (C)
+# make the requested changes
+jj new                                         # new commit on top of feature1 -> C'
+jj bookmark set feature1 -r @                  # move the bookmark to the updated tip (@ = current change)
+jj git push                                    # updates the existing PR automatically
+```
+
+Repeat as needed; squash the follow-ups later if you want a clean history (`jj squash`).
+
+### Option 2: amend the existing commit directly
+
+If you want to revise commit `C` in place rather than stacking a `C'`:
+
+```bash
+jj edit feature1                  # put the working copy directly on C
+# make the requested changes
+jj describe -m "updated feature1" # update the commit message if needed
+jj git push                       # rewrites C; the bookmark moves with it implicitly
+```
+
+### Mental model
+
+- The workspace is just your current editing context — re-pointing it is safe and non-destructive.
+- The bookmark is what the PR tracks; pushing it after revision updates the PR.
+- Commits are immutable unless you explicitly `edit`/rewrite them, so you never "go back" destructively — you re-point the workspace and rebuild history cleanly.
+
 ## Quick Reference
 
 | Goal | Commands |
@@ -148,6 +185,7 @@ This is the `jj` equivalent of `git fetch origin && git rebase origin/main`, but
 | Create / update bookmark | `jj bookmark create pr/feature1`; `jj bookmark set pr/feature1` |
 | Push for GitHub PR | `jj git push --bookmark pr/feature1` |
 | Sync with main | `jj git fetch`; `jj rebase -d main` |
+| Amend / incorporate PR feedback | `jj workspace update <ws> -r feature1`; `jj new`; `jj bookmark set feature1 -r @`; `jj git push` (or `jj edit feature1`; `jj describe -m "..."`; `jj git push`) |
 | Recover | `jj op log`; `jj undo` |
 
 ## Principles
@@ -157,3 +195,4 @@ This is the `jj` equivalent of `git fetch origin && git rebase origin/main`, but
 - Create bookmarks only for work that becomes a PR.
 - One workspace + one bookmark + one PR per agent for clean parallelism.
 - Re-push the same bookmark to update an existing PR after rebasing.
+- To incorporate PR feedback, re-point the workspace at the feature, revise history, move the bookmark, and push — the PR is driven by the bookmark.
