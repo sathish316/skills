@@ -145,6 +145,10 @@ Hierarchically rolls up project status from OpenSpec specs → tasks → issues 
 
 Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved. Source: `resources/mattpocock-skills/grill-me/SKILL.md`, from [Matt Pocock's `grill-me` skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md).
 
+4. github-merge-queue
+
+Land approved GitHub PRs through a serialized merge queue: enable GitHub's native merge queue (with its org/plan eligibility rules), use hosted alternatives like Mergify for private repos, or run the self-hosted git-based worker (`scripts/git-merge-queue.sh`) that stacks approved PRs in a disposable branch, runs CI, drops conflicting/failing ones, and fast-forwards `main` only when the stack is green.
+
 # Resources
 
 Other similar skills resources:
