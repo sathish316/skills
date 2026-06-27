@@ -169,6 +169,35 @@ skills/jujutsu-trunk-based-development/scripts/jj-trunk.sh cleanup login-feature
 - **Sync**: `jj git fetch && jj rebase -d origin/main`.
 - **Cleanup**: `jj bookmark delete <name>`.
 
+## Bash/Zsh Aliases
+
+Optional shell shortcuts for this trunk-based loop. Add the ones you want to `~/.bashrc` or `~/.zshrc` (or a sourced `~/.jj_aliases`), then reload with `source ~/.bashrc` / `source ~/.zshrc`.
+
+Guidelines:
+
+- Plain `alias` works when you only append arguments at the end (e.g. `jjfeat login-feature`).
+- Use a shell **function** when an argument goes in the middle, or when chaining multiple commands that take input (e.g. push-to-main with a message). Functions work in both bash and zsh.
+- These mirror the `scripts/jj-trunk.sh` subcommands; pick whichever interface you prefer (aliases for muscle memory, the script for a stable contract).
+- Conveniences only — the documented full commands remain the source of truth.
+
+TODO — aliases to consider adding:
+
+- [ ] `alias jjsync='jj git fetch && jj rebase -d origin/main'` — the constant sync loop.
+- [ ] `alias jjg='jj log --graph -r "all()"'` — full commit graph with bookmarks/merges.
+- [ ] `alias jjs='jj status'` — current change + working-copy diff + conflicts.
+- [ ] `alias jjnew='jj new main'` — start a fresh change on top of trunk.
+- [ ] `alias jjfeat='jj new main && jj bookmark create'` — start a review branch: `jjfeat login-feature` (then `jj git push --bookmark login-feature`).
+- [ ] `alias jjclean='jj bookmark delete'` — remove a merged feature bookmark: `jjclean login-feature`.
+- [ ] Push current change directly to `main` (function — sets message, advances trunk, pushes):
+
+```bash
+# usage: jjpushmain "commit message"   (message optional)
+jjpushmain() {
+  [ -n "$1" ] && jj describe -m "$1"
+  jj bookmark set main -r @ && jj git push --bookmark main
+}
+```
+
 ## Hard Rules
 
 - Default to pushing directly to `main`; only create a bookmark/PR when you actually want review or CI.
