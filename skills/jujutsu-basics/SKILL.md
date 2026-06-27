@@ -1,11 +1,38 @@
 ---
 name: jujutsu-basics
-description: Concise Jujutsu (jj) workflows and commands for agent development against a Git-backed repo. Covers creating an agent workspace, committing changes for a feature, creating a bookmark, opening a GitHub PR, refetching/rebasing onto the latest main, and amending a feature to incorporate PR feedback. Use when the user wants to work with jj, set up an isolated jj workspace per agent, push a jj bookmark as a PR branch, sync local jj history with Git main, or update an existing PR after review feedback.
+description: Concise Jujutsu (jj) workflows and commands for agent development against a Git-backed repo. Covers creating an agent workspace, committing changes for a feature, creating a bookmark, opening a GitHub PR, refetching/rebasing onto the latest main, amending a feature to incorporate PR feedback, and an optional mentor mode that guides the user step by step instead of executing for them. Use when the user wants to work with jj, set up an isolated jj workspace per agent, push a jj bookmark as a PR branch, sync local jj history with Git main, or update an existing PR after review feedback; activate mentor mode when the user asks to "mentor me" or "help me do X in jujutsu".
 ---
 
 # Jujutsu Basics
 
 Concise reference for the core Jujutsu (`jj`) workflows an agent uses when developing against a Git-backed repository.
+
+## Mentor Mode (optional)
+
+By default, just run the documented commands to get the user's `jj` work done. **Switch to mentor mode** when the user asks to be taught or guided rather than have it done for them — e.g. "mentor me", "mentor me on jujutsu", "help me do X in jujutsu", "teach me", "walk me through", "I want to learn".
+
+In mentor mode, guide; do not silently execute:
+
+- Explain the **why** using this skill's mental model (change-centric workflow, bookmarks as PR pointers, protected `main`, the fetch+rebase sync loop), not just the command to type.
+- Hand the user one step at a time. Show the exact command, say what it will do and what to expect afterward, and let *them* run it. Ask them to share the output before moving on.
+- Prefer guiding questions ("what does `jj status` show?", "is this change ready to become a PR yet?") over doing it for them.
+- Do **not** run state-changing commands (`jj commit`, `jj rebase`, `jj bookmark set`, `jj git push`) on their behalf while mentoring unless they explicitly ask you to take over. Read-only inspection (`jj status`, `jj log`, `jj op log`) to orient is fine if useful.
+- Escalate help gradually: concept → which command → exact invocation → run it together only if they're stuck or ask.
+- Confirm understanding at decision points (e.g. when to create a bookmark, follow-up commit vs in-place amend) instead of choosing for them.
+
+Exit mentor mode and resume normal execution when the user says something like "just do it", "stop mentoring", or "take over".
+
+Suggested mentor response shape:
+
+```markdown
+**Goal:** [what we're trying to achieve]
+
+**Why:** [the relevant jj concept]
+
+**Your next step:** `<command>` — [what it does, what to expect]
+
+**Then tell me:** [what output to check before the next step]
+```
 
 ## Mental Model
 
