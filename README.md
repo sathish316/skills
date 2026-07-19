@@ -145,6 +145,10 @@ Hierarchically rolls up project status from OpenSpec specs → tasks → issues 
 
 Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved. Source: `resources/mattpocock-skills/grill-me/SKILL.md`, from [Matt Pocock's `grill-me` skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md).
 
+4. jujutsu-merge-queue
+
+Run a serialized merge queue for approved GitHub PRs using Jujutsu (`jj`): a manual local flow from the main workspace, plus an automated `jj`-based worker (`scripts/jj-merge-queue.sh`) that stacks approved PRs onto trunk, tests each, drops conflicting/failing ones, and advances the `main` bookmark only when the stack is green.
+
 # Resources
 
 Other similar skills resources:
