@@ -145,6 +145,10 @@ Hierarchically rolls up project status from OpenSpec specs → tasks → issues 
 
 Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved. Source: `resources/mattpocock-skills/grill-me/SKILL.md`, from [Matt Pocock's `grill-me` skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md).
 
+4. finish-work-in-jujutsu-workspace
+
+The `jj` counterpart of `finish-work-in-branch-and-create-pr`. Finish completed work in a Jujutsu workspace by syncing onto the latest `main`, marking issues/tasks done, creating/updating a bookmark, and opening a GitHub PR — using a subset of the `jujutsu-basics` commands.
+
 # Resources
 
 Other similar skills resources:
