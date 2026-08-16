@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solaris"
+  short_description: "Capture apps for closed-book reconstruction"
+  default_prompt: "Use $solaris to study this app and create a self-contained megaprompt that another agent can reconstruct it from."
