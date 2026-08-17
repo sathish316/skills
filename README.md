@@ -145,6 +145,10 @@ Hierarchically rolls up project status from OpenSpec specs → tasks → issues 
 
 Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved. Source: `resources/mattpocock-skills/grill-me/SKILL.md`, from [Matt Pocock's `grill-me` skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md).
 
+4. jujutsu-basics
+
+Concise Jujutsu (`jj`) workflows and commands for agent development against a Git-backed repo: create an agent workspace, commit changes for a feature, create a bookmark, open a GitHub PR, and refetch/rebase onto the latest `main`.
+
 # Resources
 
 Other similar skills resources:
