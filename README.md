@@ -145,6 +145,10 @@ Hierarchically rolls up project status from OpenSpec specs → tasks → issues 
 
 Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved. Source: `resources/mattpocock-skills/grill-me/SKILL.md`, from [Matt Pocock's `grill-me` skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md).
 
+4. jujutsu-trunk-based-development
+
+Lightweight Jujutsu (`jj`) trunk-based workflow for simple/solo projects: push most changes directly to `main` and only occasionally open a PR for review (with GitHub-merge, local jj-native merge, or hybrid strategies), plus the constant fetch+rebase sync loop, graph visualization, and a `scripts/jj-trunk.sh` helper. Intentionally separate from the multi-agent/merge-queue jj skills.
+
 # Resources
 
 Other similar skills resources:
